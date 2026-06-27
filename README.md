@@ -1,0 +1,384 @@
+
+# OCI Generative AI Cost Allocation per API using LiteLLM
+
+
+## Overview
+
+Organizations commonly expose a single OCI Generative AI endpoint to dozens or hundreds of internal APIs and AI Agents.
+
+Although OCI provides consolidated billing information for Generative AI consumption, it does **not** provide an out-of-the-box cost breakdown by individual application or API.
+
+This project solves that problem.
+
+By introducing LiteLLM Proxy between the applications and OCI Generative AI, every request can be attributed to a specific API, while the official monthly OCI cost is collected through the OCI Usage REST API and proportionally allocated back to each consumer.
+
+The result is an accurate chargeback/showback model without changing the existing applications.
+
+---
+
+## Business Use Case
+
+Typical enterprise scenario:
+
+- Multiple REST APIs
+- AI Agents
+- LangGraph applications
+- MCP Servers
+- RAG services
+
+all consume the same OCI Generative AI endpoint.
+
+Finance receives only the total monthly OCI invoice.
+
+Engineering needs answers such as:
+
+- Which API generated the highest cost?
+- Which squad consumed the most tokens?
+- Which application should optimize prompts?
+- How much does each business unit owe?
+
+Thi material answers those questions.
+
+---
+
+## Architecture
+
+Applications -> LiteLLM Proxy -> OCI Generative AI
+
+LiteLLM records detailed token usage per virtual key/API.
+
+OCI Usage API provides the official monthly cost.
+
+The allocation engine proportionally distributes the OCI invoice according to measured consumption.
+
+---
+
+## Why LiteLLM?
+
+LiteLLM provides several capabilities particularly useful in OCI environments:
+
+- Unified OpenAI-compatible endpoint
+- Multiple LLM providers behind a single API
+- Virtual API Keys
+- Callbacks
+- Usage tracking
+- Authentication abstraction
+- Gateway functionality
+- Rate limiting
+- Budget enforcement
+- Model routing
+- Observability integration
+
+This makes LiteLLM an ideal component for enterprise cost attribution.
+
+---
+
+## Cost Allocation Strategy
+
+The project intentionally **does not** trust LiteLLM estimated prices.
+
+Instead:
+
+1. LiteLLM measures usage.
+2. OCI Usage API provides the official invoice amount.
+3. The invoice is proportionally distributed.
+
+Formula:
+
+```
+weighted_tokens =
+input_tokens × input_weight +
+output_tokens × output_weight
+
+share =
+weighted_tokens(API)
+/ weighted_tokens(all APIs)
+
+allocated_cost =
+share × official OCI monthly cost
+```
+
+---
+
+## Integration with OCI Usage REST API
+
+The allocation job authenticates using OCI Request Signing and queries the Usage API.
+
+Returned information includes:
+
+- Monthly cost
+- SKU
+- Service
+- Currency
+- Usage period
+
+The value becomes the source of truth.
+
+---
+
+## Components
+
+## LiteLLM Proxy
+
+Acts as enterprise LLM Gateway.
+
+Responsibilities:
+
+- forwards requests to OCI
+- authenticates
+- tracks usage
+- executes callbacks
+- stores request metadata
+
+## Custom Callback
+
+Captures every request and stores:
+
+- API identifier
+- request count
+- latency
+- input tokens
+- output tokens
+- total tokens
+
+## SQLite Ledger
+
+Stores the local consumption ledger used for allocation.
+
+## Allocation Engine
+
+Reads:
+
+- Ledger
+- OCI Usage API
+
+Produces:
+
+- proportional cost allocation
+
+## API Service
+
+Simple REST service used to simulate multiple APIs.
+
+## Load Simulator
+
+Generates concurrent traffic for validation.
+
+---
+
+## Repository Structure
+
+```
+config/
+    apis.yaml
+    litellm_config.yaml
+    genai.pem
+
+src/
+    api_service.py
+    custom_callbacks.py
+    ledger.py
+    allocate_costs.py
+    simulate_load.py
+    create_litellm_keys.py
+    oci_usage_rest.py
+    settings.py
+
+storage/
+scripts/
+docker-compose.yml
+requirements.txt
+```
+
+---
+
+## Configuration Files
+
+## .env
+
+Contains environment configuration.
+
+Important parameters include:
+
+- OCI credentials
+- LiteLLM endpoint
+- Usage API endpoint
+- database path
+
+## config/apis.yaml
+
+Defines:
+
+- monitored APIs
+- owners
+- virtual keys
+- allocation metric
+- model alias
+- token weights
+
+## config/litellm_config.yaml
+
+LiteLLM Proxy configuration.
+
+Includes:
+
+- exposed models
+- OCI provider
+- callbacks
+- authentication
+- master key
+- database
+
+---
+
+## Source Files
+
+### allocate_costs.py
+
+Performs monthly allocation.
+
+### oci_usage_rest.py
+
+Consumes OCI Usage REST API using OCI request signing.
+
+### custom_callbacks.py
+
+Receives LiteLLM callback events.
+
+### ledger.py
+
+Persists local usage statistics.
+
+### api_service.py
+
+REST service representing client APIs.
+
+### simulate_load.py
+
+Generates concurrent traffic.
+
+### create_litellm_keys.py
+
+Creates LiteLLM virtual keys.
+
+### settings.py
+
+Centralizes application configuration.
+
+---
+
+## Running the Project
+
+### 1. Create Python environment
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Configure
+
+```
+cp .env.example .env
+```
+
+Fill OCI credentials.
+
+### 3. Start infrastructure
+
+```
+docker compose up -d
+```
+
+### 4. Create LiteLLM keys
+
+```
+python src/create_litellm_keys.py
+```
+
+### 5. Start API service
+
+```
+PYTHONPATH=src uvicorn api_service:app --host 0.0.0.0 --port 8080
+```
+
+### 6. Generate traffic
+
+```
+python src/simulate_load.py
+
+or
+
+python src/simulate_load.py --calls 30 --concurrency 5
+```
+
+### 7. Allocate costs
+
+
+This command will calculate the total cost came from OCI Billing API:
+
+```
+python src/allocate_costs.py --month 2026-06
+```
+
+But, if you have the total cost or want to simmulate, you can run:
+
+```
+python src/allocate_costs.py --month 2026-06 --oci-cost 1234.56
+```
+
+---
+
+## Expected Result
+
+The report shows, for every API:
+
+- Requests
+- Input Tokens
+- Output Tokens
+- Weighted Tokens
+- Consumption Percentage
+- Allocated OCI Cost
+
+---
+
+## Reference Documentation
+
+Oracle Cloud
+
+- OCI Generative AI
+- OCI Usage API
+- OCI Request Signing
+- OCI SDK for Python
+
+LiteLLM
+
+- LiteLLM Documentation
+- LiteLLM Proxy
+- LiteLLM Callbacks
+- LiteLLM Budget Management
+
+---
+
+## Possible Future Improvements
+
+- PostgreSQL ledger
+- Grafana dashboards
+- Prometheus metrics
+- Langfuse integration
+- OpenTelemetry
+- Multi-tenancy
+- Department cost centers
+- Daily allocation
+- OCI Object Storage exports
+
+---
+
+## Conclusion
+
+This material demonstrates a practical enterprise architecture for implementing cost visibility over OCI Generative AI.
+
+Instead of relying on estimated model pricing, it combines precise request-level telemetry from LiteLLM with the official OCI billing information, enabling transparent chargeback and showback across APIs, business units and AI platforms.
+
+The approach is lightweight, provider-independent inside OCI Generative AI, and can easily evolve into a production-ready FinOps solution.

@@ -1,0 +1,23 @@
+model_list:
+  - model_name: oci-gemini-25-pro
+    litellm_params:
+      model: oci/google.gemini-2.5-pro
+      oci_region: os.environ/OCI_REGION
+      oci_compartment_id: os.environ/OCI_COMPARTMENT_ID
+      oci_auth_mode: os.environ/OCI_AUTH_MODE
+      oci_user: os.environ/OCI_USER
+      oci_tenancy: os.environ/OCI_TENANCY
+      oci_fingerprint: os.environ/OCI_FINGERPRINT
+      oci_key_file: os.environ/OCI_KEY_FILE
+      timeout: 120
+
+litellm_settings:
+  callbacks: ["custom_callbacks.proxy_handler_instance"]
+  drop_params: true
+  set_verbose: false
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_url: os.environ/DATABASE_URL
+  store_model_in_db: true
+  always_include_stream_usage: true
