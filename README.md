@@ -341,6 +341,104 @@ The report shows, for every API:
 - Consumption Percentage
 - Allocated OCI Cost
 
+```json
+{
+  "period": {
+    "start": "2026-06-01T00:00:00Z",
+    "end": "2026-06-30T23:59:59Z"
+  },
+  "provider": "OCI Generative AI",
+  "currency": "USD",
+  "summary": {
+    "total_requests": 152394,
+    "total_input_tokens": 38952800010,
+    "total_output_tokens": 12855660000,
+    "estimated_llm_cost_usd": 812.47,
+    "official_oci_cost_usd": 816.31,
+    "difference_usd": -3.84,
+    "difference_percent": -0.47
+  },
+  "apis": [
+    {
+      "api_name": "customer-api",
+      "requests": 52340,
+      "input_tokens": 15400230000,
+      "output_tokens": 4923400000,
+      "estimated_cost_usd": 312.55,
+      "percentage": 38.47,
+      "models": [
+        {
+          "model": "cohere.command-r-plus",
+          "requests": 41220,
+          "cost_usd": 221.73
+        },
+        {
+          "model": "llama-3.3-70b-instruct",
+          "requests": 11120,
+          "cost_usd": 90.82
+        }
+      ]
+    },
+    {
+      "api_name": "billing-api",
+      "requests": 48213,
+      "input_tokens": 12398300000,
+      "output_tokens": 3983200000,
+      "estimated_cost_usd": 256.19,
+      "percentage": 31.53,
+      "models": [
+        {
+          "model": "cohere.command-r-plus",
+          "requests": 48213,
+          "cost_usd": 256.19
+        }
+      ]
+    },
+    {
+      "api_name": "orders-api",
+      "requests": 31844,
+      "input_tokens": 7564200000,
+      "output_tokens": 2845100000,
+      "estimated_cost_usd": 171.34,
+      "percentage": 21.09,
+      "models": [
+        {
+          "model": "llama-3.3-70b-instruct",
+          "requests": 31844,
+          "cost_usd": 171.34
+        }
+      ]
+    },
+    {
+      "api_name": "search-api",
+      "requests": 19997,
+      "input_tokens": 3600080010,
+      "output_tokens": 1103966000,
+      "estimated_cost_usd": 72.39,
+      "percentage": 8.91,
+      "models": [
+        {
+          "model": "gemma-3-27b-it",
+          "requests": 19997,
+          "cost_usd": 72.39
+        }
+      ]
+    }
+  ],
+  "billing_validation": {
+    "oci_usage_api": {
+      "cost_usd": 816.31,
+      "currency": "USD"
+    },
+    "litellm_estimation": {
+      "cost_usd": 812.47
+    },
+    "status": "MATCH_WITHIN_THRESHOLD"
+  },
+  "generated_at": "2026-06-30T23:59:59Z"
+}
+```
+
 ---
 
 ## Reference Documentation
