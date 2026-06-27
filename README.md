@@ -368,3 +368,15 @@ This material demonstrates a practical enterprise architecture for implementing 
 Instead of relying on estimated model pricing, it combines precise request-level telemetry from LiteLLM with the official OCI billing information, enabling transparent chargeback and showback across APIs, business units and AI platforms.
 
 The approach is lightweight, provider-independent inside OCI Generative AI, and can easily evolve into a production-ready FinOps solution.
+
+---
+
+## Disclaimer
+
+>**IMPORTANT**: The source code must be used at your own risk. There is no support and/or link with any company. The source code is free to modify and was built solely for the purpose of helping the community
+
+---
+
+## Acknowledgments
+
+- **Author** - Cristiano Hoshikawa (Oracle LAD A-Team Solution Engineer)
