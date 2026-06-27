@@ -443,14 +443,15 @@ The report shows, for every API:
 
 ## Reference Documentation
 
-Oracle Cloud
+### Oracle Cloud
 
 - [OCI Generative AI](https://docs.oracle.com/en-us/iaas/Content/generative-ai/home.htm)
 - [OCI Usage API](https://docs.oracle.com/en-us/iaas/Content/pl-sql-sdk/doc/usage-api-package.html)
 - [OCI Request Signing](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/usingapi.htm)
 - [OCI SDK for Python](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm)
 - [OCI and LiteLLM](https://blogs.oracle.com/ai-and-datascience/litellm-natively-supports-generative-ai)
-LiteLLM
+
+### LiteLLM
 
 - [LiteLLM Documentation](https://docs.litellm.ai/docs/)
 - [LiteLLM Proxy](https://docs.litellm.ai/docs/providers/litellm_proxy)
