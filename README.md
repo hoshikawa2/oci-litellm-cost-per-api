@@ -347,32 +347,18 @@ The report shows, for every API:
 
 Oracle Cloud
 
-- OCI Generative AI
-- OCI Usage API
-- OCI Request Signing
-- OCI SDK for Python
+- [OCI Generative AI](https://docs.oracle.com/en-us/iaas/Content/generative-ai/home.htm)
+- [OCI Usage API](https://docs.oracle.com/en-us/iaas/Content/pl-sql-sdk/doc/usage-api-package.html)
+- [OCI Request Signing](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/usingapi.htm)
+- [OCI SDK for Python](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/pythonsdk.htm)
 
 LiteLLM
 
-- LiteLLM Documentation
-- LiteLLM Proxy
-- LiteLLM Callbacks
-- LiteLLM Budget Management
-
----
-
-## Possible Future Improvements
-
-- PostgreSQL ledger
-- Grafana dashboards
-- Prometheus metrics
-- Langfuse integration
-- OpenTelemetry
-- Multi-tenancy
-- Department cost centers
-- Daily allocation
-- OCI Object Storage exports
-
+- [LiteLLM Documentation](https://docs.litellm.ai/docs/)
+- [LiteLLM Proxy](https://docs.litellm.ai/docs/providers/litellm_proxy)
+- [LiteLLM Callbacks](https://docs.litellm.ai/docs/observability/callbacks)
+- [LiteLLM Budget Management](https://docs.litellm.ai/docs/proxy/users)
+- [LiteLLM Token Usage & Cost](https://docs.litellm.ai/docs/completion/token_usage)
 ---
 
 ## Conclusion
